@@ -1,5 +1,6 @@
 var canvas = document.getElementById("gameCanvas");
 var context = canvas.getContext("2d");
+document.getElementById("angle").defaultValue = "45";
 
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
@@ -14,9 +15,9 @@ var splashTimer = .5;
 
 var SHELL = {
 	image: document.createElement("img"),
-	pos: new Vec(0.0,0.0,0.0),
+	pos: new Vec(0.0,10.0,0.0),
 	acc: new Vec(),
-	angle: 45,
+	angle: 90,
 	speed: 100.0,
 	width: 50,
 	height: 50,
@@ -76,20 +77,20 @@ function drawScene()
 	{
 		for (var j = -600; j < 1000; j += 600)
 		{
-			context.drawImage(Stars, -(SHELL.pos.x % 600) + i, (SHELL.pos.y % 600) + j, 600, 600);
+			context.drawImage(Stars, -(SHELL.pos.x / 5 % 600) + i, (SHELL.pos.y % 600) + j, 600, 600);
 		}
 	}
 	for (var i = -1921; i < canvas.width + 1921; i += 1921)
 	{
-		context.drawImage(Mountans, -(SHELL.pos.x * 3 % 1921) + i, SHELL.pos.y + 500, 1921, 500);
+		context.drawImage(Mountans, -(SHELL.pos.x * 50 % 1921) + i, SHELL.pos.y + 500, 1921, 500);
 	}
 	for (var i = -1500; i < canvas.width + 1500; i += 1500)
 	{
-		context.drawImage(Tree, -(SHELL.pos.x * 6 % 1500) + i, SHELL.pos.y + 710, 1500, 300);
+		context.drawImage(Tree, -(SHELL.pos.x * 100 % 1500) + i, SHELL.pos.y + 710, 1500, 300);
 	}
 	for (var i = -150; i < canvas.width + 150; i += 150)
 	{
-		context.drawImage(Grass, -(SHELL.pos.x * 10 % 150) + i, SHELL.pos.y + 990, 150, 150);
+		context.drawImage(Grass, -(SHELL.pos.x * 150 % 150) + i, SHELL.pos.y + 990, 150, 150);
 	}
 	
 	// draw bullet
@@ -141,29 +142,27 @@ function runGame(deltaTime)
 	drawScene();
 
 	
-	if (SHELL.fired && SHELL.pos.y > -5)
+	if (SHELL.fired && (SHELL.pos.y > -1 || startFire < 1))
 	{
 		if (startFire == 0)
 		{
+			SHELL.angle = document.getElementById("angle").value;
+			console.log("Shell angle:" + SHELL.angle);
+
 			SHELL.acc.x = Math.cos(SHELL.angle * Math.PI / 180) * SHELL.speed;
 			SHELL.acc.y = Math.sin(SHELL.angle * Math.PI / 180) * SHELL.speed;
 
-
-			// var angle = Math.atan(SHELL.acc.y / SHELL.acc.x) * 180.0 / Math.PI;
-			// console.log("current angle = " + angle);
-
-			// var range = SHELL.speed * SHELL.speed * Math.sin(2.0 * angle) / gravity; // https://www.omnicalculator.com/physics/range-projectile-motion
-			// console.log("predicted distance = " + range);
+			var range = 2 * SHELL.acc.x * SHELL.acc.y / -gravity;
+			console.log("predicted distance = " + range);
 
 			console.log(SHELL.acc);
 
-			console.log(SHELL.pos);
 			startFire = Date.now()  * 0.001;
 		}
 		calBullet(deltaTime, getTime());
 		
 	}
-	else if (SHELL.fired && SHELL.pos.y <= -5 && s)
+	else if (SHELL.fired && SHELL.pos.y <= -1 && s)
 	{
 		console.log(SHELL.pos);
 		console.log("time = " + getTime());
