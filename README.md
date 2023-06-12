@@ -6,3 +6,4 @@ An artillery crew needs a tool for them to figure out what angle they will have 
 there is a satellite above that will provide location data. 
 the crew will need a site to access the tool with an input for thier position, the targets position, the velocity of thier shell.
 
+https://amesweb.info/Physics/Projectile-Motion-Calculator.aspx
