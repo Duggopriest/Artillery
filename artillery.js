@@ -86,12 +86,13 @@ function drawScene()
 	}
 	for (var i = -1500; i < canvas.width + 1500; i += 1500)
 	{
-		context.drawImage(Tree, -(SHELL.pos.x * 50 % 1500) + i, SHELL.pos.y * 5 + 710, 1500, 300);
+		context.drawImage(Tree, -(SHELL.pos.x * 30 % 1500) + i, SHELL.pos.y * 10 + 710, 1500, 300);
 	}
 	for (var i = -150; i < canvas.width + 150; i += 150)
 	{
-		context.drawImage(Grass, -(SHELL.pos.x * 100 
-					% 150) + i, SHELL.pos.y * 5 + 990, 150, 150);
+		context.drawImage(Grass, -(SHELL.pos.x * 50
+					  
+					% 150) + i, SHELL.pos.y * 15 + 990, 150, 150);
 	}
 	
 	// draw bullet
