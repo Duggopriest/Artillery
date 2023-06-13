@@ -77,20 +77,21 @@ function drawScene()
 	{
 		for (var j = -600; j < 1000; j += 600)
 		{
-			context.drawImage(Stars, -(SHELL.pos.x / 5 % 600) + i, (SHELL.pos.y % 600) + j, 600, 600);
+			context.drawImage(Stars, -(SHELL.pos.x / 5 % 600) + i, (SHELL.pos.y * 2 % 600) + j, 600, 600);
 		}
 	}
 	for (var i = -1921; i < canvas.width + 1921; i += 1921)
 	{
-		context.drawImage(Mountans, -(SHELL.pos.x * 50 % 1921) + i, SHELL.pos.y + 500, 1921, 500);
+		context.drawImage(Mountans, -(SHELL.pos.x * 20 % 1921) + i, SHELL.pos.y * 5 + 500, 1921, 500);
 	}
 	for (var i = -1500; i < canvas.width + 1500; i += 1500)
 	{
-		context.drawImage(Tree, -(SHELL.pos.x * 100 % 1500) + i, SHELL.pos.y + 710, 1500, 300);
+		context.drawImage(Tree, -(SHELL.pos.x * 50 % 1500) + i, SHELL.pos.y * 5 + 710, 1500, 300);
 	}
 	for (var i = -150; i < canvas.width + 150; i += 150)
 	{
-		context.drawImage(Grass, -(SHELL.pos.x * 150 % 150) + i, SHELL.pos.y + 990, 150, 150);
+		context.drawImage(Grass, -(SHELL.pos.x * 100 
+					% 150) + i, SHELL.pos.y * 5 + 990, 150, 150);
 	}
 	
 	// draw bullet
