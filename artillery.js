@@ -15,7 +15,7 @@ var splashTimer = .5;
 
 var SHELL = {
 	image: document.createElement("img"),
-	pos: new Vec(0.0,10.0,0.0),
+	pos: new Vec(0.0,0.0,0.0),
 	acc: new Vec(),
 	angle: 90,
 	speed: 100.0,
@@ -39,6 +39,9 @@ Mountans.src = "mountans.png";
 
 var Stars = document.createElement("img");
 Stars.src = "stars.jpg";
+
+var TargetPng = document.createElement("img");
+TargetPng.src = "WA_80_cm_archery_target.svg.png";
 
 var startFrameMillis = Date.now();
 var endFrameMillis = Date.now();
@@ -77,33 +80,32 @@ function drawScene()
 	{
 		for (var j = -600; j < 1000; j += 600)
 		{
-			context.drawImage(Stars, -(SHELL.pos.x / 5 % 600) + i, (SHELL.pos.y * 2 % 600) + j, 600, 600);
+			context.drawImage(Stars, -(SHELL.pos.x / 5 % 600) + i, (SHELL.pos.y % 600) + j, 600, 600);
 		}
 	}
 	for (var i = -1921; i < canvas.width + 1921; i += 1921)
 	{
-		context.drawImage(Mountans, -(SHELL.pos.x * 20 % 1921) + i, SHELL.pos.y * 5 + 500, 1921, 500);
+		context.drawImage(Mountans, -(SHELL.pos.x * 50 % 1921) + i, SHELL.pos.y * 2 + 400, 1921, 500);
 	}
 	for (var i = -1500; i < canvas.width + 1500; i += 1500)
 	{
-		context.drawImage(Tree, -(SHELL.pos.x * 30 % 1500) + i, SHELL.pos.y * 10 + 710, 1500, 300);
+		context.drawImage(Tree, -(SHELL.pos.x * 100 % 1500) + i, SHELL.pos.y * 5 + 610, 1500, 300);
 	}
 	for (var i = -150; i < canvas.width + 150; i += 150)
 	{
-		context.drawImage(Grass, -(SHELL.pos.x * 50
-					  
-					% 150) + i, SHELL.pos.y * 15 + 990, 150, 150);
-	}
+		context.drawImage(Grass, -(SHELL.pos.x * 150 % 150) + i, SHELL.pos.y * 5 + 890, 150, 150);
+	}context.drawImage(TargetPng, (1020 * 50 - SHELL.pos.x * 50) + 610, 890, 100,100);
+	
 	
 	// draw bullet
 	if (SHELL.fired)
 	{
-		context.drawImage(SHELL.image, 500, (SHELL.pos.y > 500 ? 500 : (-SHELL.pos.y + 1000)), 50, 50);
+		context.drawImage(SHELL.image, 600, (SHELL.pos.y > 500 ? 400 : (-SHELL.pos.y + 900)), 50, 50);
 	}
 	else
 	{
 		//context.scale(-1,1);
-		context.drawImage(Cannon, 500, SHELL.pos.y + 950, -271, 81);
+		context.drawImage(Cannon, 500, SHELL.pos.y + 850, -271, 81);
     
     	// always clean up -- reset transformations to default
     	context.setTransform(1,0,0,1,0,0);
@@ -145,25 +147,8 @@ function runGame(deltaTime)
 
 	
 	if (SHELL.fired && (SHELL.pos.y > -1 || startFire < 1))
-	{
-		if (startFire == 0)
-		{
-			SHELL.angle = document.getElementById("angle").value;
-			console.log("Shell angle:" + SHELL.angle);
-
-			SHELL.acc.x = Math.cos(SHELL.angle * Math.PI / 180) * SHELL.speed;
-			SHELL.acc.y = Math.sin(SHELL.angle * Math.PI / 180) * SHELL.speed;
-
-			var range = 2 * SHELL.acc.x * SHELL.acc.y / -gravity;
-			console.log("predicted distance = " + range);
-
-			console.log(SHELL.acc);
-
-			startFire = Date.now()  * 0.001;
-		}
+	
 		calBullet(deltaTime, getTime());
-		
-	}
 	else if (SHELL.fired && SHELL.pos.y <= -1 && s)
 	{
 		console.log(SHELL.pos);
@@ -206,7 +191,21 @@ function run() {
 
 function fireGun()
 {
+	SHELL.pos = new Vec();
 	SHELL.fired = true;
+						SHELL.angle = document.getElementById("angle").value;
+									console.log("Shell angle:" + SHELL.angle);
+
+												SHELL.acc.x = Math.cos(SHELL.angle * Math.PI / 180) * SHELL.speed;
+															SHELL.acc.y = Math.sin(SHELL.angle * Math.PI / 180) * SHELL.speed;
+
+																		var range = 2 * SHELL.acc.x * SHELL.acc.y / -gravity;
+																					console.log("predicted distance = " + range);
+
+																								console.log(SHELL.acc);
+
+																											startFire = Date.now()  * 0.001;
+																													
 }
 
 //===========================================DO NOT EDIT BELOW THIS LINE =================================================
