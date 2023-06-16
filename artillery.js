@@ -15,13 +15,16 @@ var splashTimer = .5;
 
 var SHELL = {
 	image: document.createElement("img"),
+	oldPos: new Vec(0.0,0.0,0.0),
 	pos: new Vec(0.0,0.0,0.0),
 	acc: new Vec(),
 	angle: 90,
 	speed: 100.0,
 	width: 50,
 	height: 50,
-	fired: false
+	fired: false,
+	currentAngle: 0,
+	mapAngle: 0
 };
 SHELL.image.src = "Shell.png";
 
@@ -60,18 +63,17 @@ function getDeltaTime()
 
 function calBullet(deltaTime, time)
 {
-	// var point = SHELL.pos.add( SHELL.acc.multiply(SHELL.speed * time * 0.03 ) );
-	
-	// var VecDown = new Vec(0.0, -1.0);
-	// var gravityVec = VecDown.multiply(gravity * time * time);
-
-	// SHELL.pos = point.add(gravityVec);
-
-	// SHELL.pos.x = SHELL.acc.x * time;
-	// SHELL.pos.y = SHELL.acc.y + (gravity * time);
+	SHELL.oldPos.x = SHELL.pos.x;
+	SHELL.oldPos.y = SHELL.pos.y;
+	SHELL.oldPos.z = SHELL.pos.z;
 
 	SHELL.pos.x = SHELL.acc.x * time;
+	SHELL.pos.z = SHELL.acc.z * time;
 	SHELL.pos.y = SHELL.acc.y * time + gravity / 2 * time * time;
+
+	SHELL.currentAngle = Math.atan( ( SHELL.oldPos.y - SHELL.pos.y ) /  ( SHELL.oldPos.x - SHELL.pos.x ) );
+
+	SHELL.mapAngle = Math.atan( ( SHELL.oldPos.z - SHELL.pos.z ) / ( SHELL.oldPos.x - SHELL.pos.x ) );
 }
 
 function drawScene()
@@ -83,24 +85,31 @@ function drawScene()
 			context.drawImage(Stars, -(SHELL.pos.x / 5 % 600) + i, (SHELL.pos.y % 600) + j, 600, 600);
 		}
 	}
-	for (var i = -1921; i < canvas.width + 1921; i += 1921)
+	for (var i = -1921; i < canvas.width + 1921 && SHELL.pos.y < 500; i += 1921)
 	{
-		context.drawImage(Mountans, -(SHELL.pos.x * 50 % 1921) + i, SHELL.pos.y * 2 + 400, 1921, 500);
+		context.drawImage(Mountans, -(SHELL.pos.x * 50 % 1921) + i, SHELL.pos.y * 10 + 400, 1921, 500);
 	}
-	for (var i = -1500; i < canvas.width + 1500; i += 1500)
+	for (var i = -1500; i < canvas.width + 1500 && SHELL.pos.y < 500; i += 1500)
 	{
-		context.drawImage(Tree, -(SHELL.pos.x * 100 % 1500) + i, SHELL.pos.y * 5 + 610, 1500, 300);
+		context.drawImage(Tree, -(SHELL.pos.x * 100 % 1500) + i, SHELL.pos.y * 20 + 610, 1500, 300);
 	}
-	for (var i = -150; i < canvas.width + 150; i += 150)
+	for (var i = -150; i < canvas.width + 150 && SHELL.pos.y < 500; i += 150)
 	{
-		context.drawImage(Grass, -(SHELL.pos.x * 150 % 150) + i, SHELL.pos.y * 5 + 890, 150, 150);
-	}context.drawImage(TargetPng, (1020 * 50 - SHELL.pos.x * 50) + 610, 890, 100,100);
-	
+		context.drawImage(Grass, -(SHELL.pos.x * 150 % 150) + i, SHELL.pos.y * 20 + 890, 150, 150);
+	}
+
+	context.drawImage(TargetPng, (1020 * 50 - SHELL.pos.x * 50) + 610, 890, 100,100);
 	
 	// draw bullet
 	if (SHELL.fired)
 	{
-		context.drawImage(SHELL.image, 600, (SHELL.pos.y > 500 ? 400 : (-SHELL.pos.y + 900)), 50, 50);
+		// var y = (SHELL.pos.y > 500 ? 400 : (-SHELL.pos.y + 900));
+		var y = -( SHELL.pos.y * SHELL.pos.y ) / 100 + 900;
+		context.translate(600, y);
+		context.rotate(-SHELL.currentAngle);
+		context.drawImage(SHELL.image, 0, 0, 50, 50);
+		context.rotate(SHELL.currentAngle);
+		context.translate(-600, -y);
 	}
 	else
 	{
@@ -144,16 +153,20 @@ function runGame(deltaTime)
     context.fillRect(0, 0, canvas.width, canvas.height);
 
 	drawScene();
+	drawMap();
 
-	
-	if (SHELL.fired && (SHELL.pos.y > -1 || startFire < 1))
-	
+
+	if (SHELL.fired && SHELL.pos.y > -0.1)
+	{
 		calBullet(deltaTime, getTime());
-	else if (SHELL.fired && SHELL.pos.y <= -1 && s)
+			
+	}
+	else if (SHELL.fired && SHELL.pos.y <= 0 && s)
 	{
 		console.log(SHELL.pos);
 		console.log("time = " + getTime());
 		s = false;
+		SHELL.pos.y = -0.1;
 	}
 	
 }
@@ -193,19 +206,18 @@ function fireGun()
 {
 	SHELL.pos = new Vec();
 	SHELL.fired = true;
-						SHELL.angle = document.getElementById("angle").value;
-									console.log("Shell angle:" + SHELL.angle);
+	SHELL.angle = document.getElementById("angle").value;
+	console.log("Shell angle:" + SHELL.angle);
 
-												SHELL.acc.x = Math.cos(SHELL.angle * Math.PI / 180) * SHELL.speed;
-															SHELL.acc.y = Math.sin(SHELL.angle * Math.PI / 180) * SHELL.speed;
+	SHELL.acc.x = Math.cos(SHELL.angle * Math.PI / 180) * SHELL.speed;
+	SHELL.acc.y = Math.sin(SHELL.angle * Math.PI / 180) * SHELL.speed;
 
-																		var range = 2 * SHELL.acc.x * SHELL.acc.y / -gravity;
-																					console.log("predicted distance = " + range);
+	var range = 2 * SHELL.acc.x * SHELL.acc.y / -gravity;
+	console.log("predicted distance = " + range);
 
-																								console.log(SHELL.acc);
+	console.log(SHELL.acc);
 
-																											startFire = Date.now()  * 0.001;
-																													
+	startFire = Date.now()  * 0.001;																										
 }
 
 //===========================================DO NOT EDIT BELOW THIS LINE =================================================
