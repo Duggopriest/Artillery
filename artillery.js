@@ -1,6 +1,7 @@
 var canvas = document.getElementById("gameCanvas");
 var context = canvas.getContext("2d");
-document.getElementById("angle").defaultValue = "45";
+document.getElementById("Vangle").defaultValue = "45";
+document.getElementById("Hangle").defaultValue = "45";
 
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
@@ -18,7 +19,8 @@ var SHELL = {
 	oldPos: new Vec(0.0,0.0,0.0),
 	pos: new Vec(0.0,0.0,0.0),
 	acc: new Vec(),
-	angle: 90,
+	verticalAngle: 90,
+	horizontalAngle: 90,
 	speed: 100.0,
 	width: 50,
 	height: 50,
@@ -61,7 +63,7 @@ function getDeltaTime()
     return deltaTime;
 }  
 
-function calBullet(deltaTime, time)
+function calBullet( time )
 {
 	SHELL.oldPos.x = SHELL.pos.x;
 	SHELL.oldPos.y = SHELL.pos.y;
@@ -158,7 +160,7 @@ function runGame(deltaTime)
 
 	if (SHELL.fired && SHELL.pos.y > -0.1)
 	{
-		calBullet(deltaTime, getTime());
+		calBullet(getTime());
 			
 	}
 	else if (SHELL.fired && SHELL.pos.y <= 0 && s)
@@ -206,11 +208,15 @@ function fireGun()
 {
 	SHELL.pos = new Vec();
 	SHELL.fired = true;
-	SHELL.angle = document.getElementById("angle").value;
-	console.log("Shell angle:" + SHELL.angle);
+	SHELL.verticalAngle = document.getElementById("Vangle").value;
+	SHELL.horizontalAngle = document.getElementById("Hangle").value;
+	console.log("Shell Vangle:" + SHELL.verticalAngle);
+	console.log("Shell Hangle:" + SHELL.horizontalAngle);
 
-	SHELL.acc.x = Math.cos(SHELL.angle * Math.PI / 180) * SHELL.speed;
-	SHELL.acc.y = Math.sin(SHELL.angle * Math.PI / 180) * SHELL.speed;
+	SHELL.acc.x = Math.cos(SHELL.verticalAngle * Math.PI / 180) * SHELL.speed;
+	SHELL.acc.y = Math.sin(SHELL.verticalAngle * Math.PI / 180) * SHELL.speed;
+
+	SHELL.acc.z = Math.cos(SHELL.horizontalAngle * Math.PI / 180) * SHELL.speed;
 
 	var range = 2 * SHELL.acc.x * SHELL.acc.y / -gravity;
 	console.log("predicted distance = " + range);
