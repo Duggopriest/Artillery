@@ -79,8 +79,6 @@ function calBullet( time )
 
 	SHELL.mapPos.x = SHELL.mapAcc.x * time;
 	SHELL.mapPos.z = SHELL.mapAcc.z * time;
-	// SHELL.mapPos.x = Math.cos(SHELL.horizontalAngle * Math.PI / 180) * SHELL.speed * time;
-	// SHELL.mapPos.z = Math.sin(SHELL.horizontalAngle * Math.PI / 180) * SHELL.speed * time;
 }
 
 function drawScene()
@@ -105,7 +103,7 @@ function drawScene()
 		context.drawImage(Grass, -(SHELL.pos.x * 150 % 150) + i, SHELL.pos.y * 20 + 890, 150, 150);
 	}
 
-	context.drawImage(TargetPng, (1020 * 50 - SHELL.pos.x * 50) + 610, 890, 100,100);
+	context.drawImage(TargetPng, (MAP.distance * 50 - SHELL.pos.x * 50) + 610, 890, 100,100);
 	
 	// draw bullet
 	if (SHELL.fired)
