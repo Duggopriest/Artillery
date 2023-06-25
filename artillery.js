@@ -18,7 +18,9 @@ var SHELL = {
 	image: document.createElement("img"),
 	oldPos: new Vec(0.0,0.0,0.0),
 	pos: new Vec(0.0,0.0,0.0),
+	mapPos: new Vec(0.0,0.0,0.0),
 	acc: new Vec(),
+	mapAcc: new Vec(),
 	verticalAngle: 90,
 	horizontalAngle: 90,
 	speed: 100.0,
@@ -75,7 +77,10 @@ function calBullet( time )
 
 	SHELL.currentAngle = Math.atan( ( SHELL.oldPos.y - SHELL.pos.y ) /  ( SHELL.oldPos.x - SHELL.pos.x ) );
 
-	SHELL.mapAngle = Math.atan( ( SHELL.oldPos.z - SHELL.pos.z ) / ( SHELL.oldPos.x - SHELL.pos.x ) );
+	SHELL.mapPos.x = SHELL.mapAcc.x * time;
+	SHELL.mapPos.z = SHELL.mapAcc.z * time;
+	// SHELL.mapPos.x = Math.cos(SHELL.horizontalAngle * Math.PI / 180) * SHELL.speed * time;
+	// SHELL.mapPos.z = Math.sin(SHELL.horizontalAngle * Math.PI / 180) * SHELL.speed * time;
 }
 
 function drawScene()
@@ -87,7 +92,7 @@ function drawScene()
 			context.drawImage(Stars, -(SHELL.pos.x / 5 % 600) + i, (SHELL.pos.y % 600) + j, 600, 600);
 		}
 	}
-	for (var i = -1921; i < canvas.width + 1921 && SHELL.pos.y < 500; i += 1921)
+	for (var i = -1921; i < canvas.width + 1921 && SHELL.pos.y < 500; i += 1920)
 	{
 		context.drawImage(Mountans, -(SHELL.pos.x * 50 % 1921) + i, SHELL.pos.y * 10 + 400, 1921, 500);
 	}
@@ -161,11 +166,13 @@ function runGame(deltaTime)
 	if (SHELL.fired && SHELL.pos.y > -0.1)
 	{
 		calBullet(getTime());
-			
 	}
 	else if (SHELL.fired && SHELL.pos.y <= 0 && s)
 	{
+		console.log("shell pos:");
 		console.log(SHELL.pos);
+		console.log("shell MAP pos:");
+		console.log(SHELL.mapPos);
 		console.log("time = " + getTime());
 		s = false;
 		SHELL.pos.y = -0.1;
@@ -215,13 +222,16 @@ function fireGun()
 
 	SHELL.acc.x = Math.cos(SHELL.verticalAngle * Math.PI / 180) * SHELL.speed;
 	SHELL.acc.y = Math.sin(SHELL.verticalAngle * Math.PI / 180) * SHELL.speed;
+	console.log("Shell acc:");
+	console.log(SHELL.acc);
 
-	SHELL.acc.z = Math.cos(SHELL.horizontalAngle * Math.PI / 180) * SHELL.speed;
+	SHELL.mapAcc.x = Math.cos(SHELL.horizontalAngle * Math.PI / 180) * SHELL.speed * 0.7062;
+	SHELL.mapAcc.z = Math.sin(SHELL.horizontalAngle * Math.PI / 180) * SHELL.speed * 0.7062;
+	console.log("Shell Map acc:");
+	console.log(SHELL.mapAcc);
 
 	var range = 2 * SHELL.acc.x * SHELL.acc.y / -gravity;
 	console.log("predicted distance = " + range);
-
-	console.log(SHELL.acc);
 
 	startFire = Date.now()  * 0.001;																										
 }
